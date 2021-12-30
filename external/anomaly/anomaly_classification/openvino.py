@@ -163,13 +163,13 @@ class OpenVINOAnomalyClassificationTask(IInferenceTask, IEvaluationTask, IOptimi
         """Get Meta Data."""
 
         image_threshold = np.frombuffer(self.task_environment.model.get_data("image_threshold"), dtype=np.float32)
-        min = np.frombuffer(self.task_environment.model.get_data("min"), dtype=np.float32)
-        max = np.frombuffer(self.task_environment.model.get_data("max"), dtype=np.float32)
+        # min = np.frombuffer(self.task_environment.model.get_data("min"), dtype=np.float32)
+        # max = np.frombuffer(self.task_environment.model.get_data("max"), dtype=np.float32)
         meta_data = dict(
             image_threshold=image_threshold,
             pixel_threshold=image_threshold,  # re-use image threshold for pixel normalization
-            min=min,
-            max=max
+            # min=min,
+            # max=max
         )
         return meta_data
 
@@ -256,8 +256,8 @@ class OpenVINOAnomalyClassificationTask(IInferenceTask, IEvaluationTask, IOptimi
 
         output_model.set_data("label_schema.json", label_schema_to_bytes(self.task_environment.label_schema))
         output_model.set_data("image_threshold", self.task_environment.model.get_data("image_threshold"))
-        output_model.set_data("min", self.task_environment.model.get_data("min"))
-        output_model.set_data("max", self.task_environment.model.get_data("max"))
+        # output_model.set_data("min", self.task_environment.model.get_data("min"))
+        # output_model.set_data("max", self.task_environment.model.get_data("max"))
         output_model.model_status = ModelStatus.SUCCESS
         output_model.model_format = ModelFormat.OPENVINO
         output_model.optimization_type = ModelOptimizationType.POT

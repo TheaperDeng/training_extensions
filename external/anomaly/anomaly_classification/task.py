@@ -133,7 +133,7 @@ class AnomalyClassificationTask(ITrainingTask, IInferenceTask, IEvaluationTask, 
         """
         config = self.get_config()
         datamodule = OTEAnomalyDataModule(config=config, dataset=dataset)
-        callbacks = [ProgressCallback(parameters=train_parameters), MinMaxNormalizationCallback()]
+        callbacks = [ProgressCallback(parameters=train_parameters)]
 
         self.trainer = Trainer(**config.trainer, logger=False, callbacks=callbacks)
         self.trainer.fit(model=self.model, datamodule=datamodule)
@@ -183,8 +183,7 @@ class AnomalyClassificationTask(ITrainingTask, IInferenceTask, IEvaluationTask, 
         # Callbacks.
         progress = ProgressCallback(parameters=inference_parameters)
         inference = InferenceCallback(dataset, self.labels)
-        normalize = MinMaxNormalizationCallback()
-        callbacks = [progress, normalize, inference]
+        callbacks = [progress, inference]
 
         self.trainer = Trainer(**config.trainer, logger=False, callbacks=callbacks)
         self.trainer.predict(model=self.model, datamodule=datamodule)
@@ -232,8 +231,8 @@ class AnomalyClassificationTask(ITrainingTask, IInferenceTask, IEvaluationTask, 
 
     def _set_metadata(self, output_model: ModelEntity):
         output_model.set_data("image_threshold", self.model.image_threshold.value.cpu().numpy().tobytes())
-        output_model.set_data("min", self.model.min_max.min.cpu().numpy().tobytes())
-        output_model.set_data("max", self.model.min_max.max.cpu().numpy().tobytes())
+        # output_model.set_data("min", self.model.min_max.min.cpu().numpy().tobytes())
+        # output_model.set_data("max", self.model.min_max.max.cpu().numpy().tobytes())
 
     @staticmethod
     def _is_docker() -> bool:

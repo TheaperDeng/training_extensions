@@ -48,7 +48,7 @@ from ote_sdk.usecases.tasks.interfaces.export_interface import ExportType, IExpo
 from ote_sdk.usecases.tasks.interfaces.inference_interface import IInferenceTask
 from ote_sdk.usecases.tasks.interfaces.training_interface import ITrainingTask
 from ote_sdk.usecases.tasks.interfaces.unload_interface import IUnload
-from pytorch_lightning import Trainer
+from bigdl.nano.pytorch.trainer import Trainer
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +131,8 @@ class AnomalyClassificationTask(ITrainingTask, IInferenceTask, IEvaluationTask, 
         Train the anomaly task
         """
         config = self.get_config()
+        # TODO: find a way to set this through command rather than hard coding
+        config.trainer.update({"num_processes": 8, "distributed_backend": "spawn", "use_ipex": False})
         datamodule = OTEAnomalyDataModule(config=config, dataset=dataset)
         callbacks = [ProgressCallback(parameters=train_parameters)]
 

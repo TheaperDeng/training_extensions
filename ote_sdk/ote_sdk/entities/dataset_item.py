@@ -404,6 +404,23 @@ class DatasetItemEntity(metaclass=abc.ABCMeta):
                 setattr(clone, name, copy.deepcopy(value, memo))
         return clone
 
+    def __getstate__(self):
+        """
+        When we serialize this object, be sure not to serialize the lock, as this is not possible,
+        make a new lock instead.
+        """
+        state = self.__dict__.copy()
+        del state['_DatasetItemEntity__roi_lock']
+        return state
+
+    def __setstate__(self, state):
+        """
+        When we serialize this object, be sure not to serialize the lock, as this is not possible,
+        make a new lock instead.
+        """
+        self.__dict__.update(state)
+        self.__roi_lock = Lock()
+
     def append_metadata_item(
         self, data: IMetadata, model: Optional[ModelEntity] = None
     ):

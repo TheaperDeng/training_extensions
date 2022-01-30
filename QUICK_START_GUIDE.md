@@ -34,6 +34,7 @@
 
 4. Let's create, activate Object Detection virtual environment and install `ote_cli`:
    ```
+   export OTE_SDK_PATH=/path/to/ote_sdk
    ./external/mmdetection/init_venv.sh det_venv
    source det_venv/bin/activate
    pip3 install -e ote_cli/
